@@ -49,14 +49,26 @@ const getAll = async (userId, group, page, perPage, filter) => {
 
   const matches = [];
 
+
+  // if (group || group === 0) {
+  //   matches.push({
+  //     $match: {"$and":[{ group }, { page }] }
+  //     });
+  // }
+
   if (group || group === 0) {
     matches.push({
-      $match: {
-        group
-      }
-    });
+      $match: {"$and":[ { page: page}, { group: group}] }
+      });
   }
 
+  // if (page || page === 0) {
+  //   matches.push({
+  //     $match: {
+  //       page: page
+  //     }
+  //   });
+  // }
   if (filter) {
     matches.push({
       $match: {
@@ -66,7 +78,8 @@ const getAll = async (userId, group, page, perPage, filter) => {
   }
   const facet = {
     $facet: {
-      paginatedResults: [{ $skip: page * perPage }, { $limit: perPage }],
+      //paginatedResults: [{ $skip: page * perPage }, { $limit: perPage }],
+      paginatedResults: [ { $limit: perPage }],
       totalCount: [
         {
           $count: 'count'
@@ -74,7 +87,9 @@ const getAll = async (userId, group, page, perPage, filter) => {
       ]
     }
   };
-  return await Word.aggregate([lookup, ...pipeline, ...matches, facet]);
+  const words = await Word.aggregate([lookup, ...pipeline, ...matches, facet]);
+  console.log('words', words)
+  return words
 };
 
 const get = async (wordId, userId) => {

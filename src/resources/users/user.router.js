@@ -3,15 +3,40 @@ const router = require('express').Router();
 
 const userService = require('./user.service');
 const { id, user } = require('../../utils/validation/schemas');
+const multer = require('multer');
+const moment = require('moment');
+const path = require('path');
+
+
+const storage = multer.diskStorage({
+
+  destination:function(req, file, cb) {
+    cb(null, path.join(__dirname, 'avatars'))
+  },
+
+  filename:function(req, file, cb) {
+    const date = moment().format('DDMMYYYY-HHmmss_SSS')
+    cb(null, `${date}-${file.originalname}`)
+  }
+})
+
+const loader = multer({ storage: storage });
 const {
   validator,
   userIdValidator
 } = require('../../utils/validation/validator');
 
-router.post('/', validator(user, 'body'), async (req, res) => {
-  const userEntity = await userService.save(req.body);
-  res.status(OK).send(userEntity.toResponse());
-});
+router.post(
+  '/',
+  loader.single('avatar'),
+  validator(user, 'body'),
+  async (req, res) => {
+    const avatar = req.file ? req.file.path : '';
+    const body = { ...req.body, avatar };
+    const userEntity = await userService.save(body);
+    res.status(OK).send(userEntity.toResponse());
+  }
+);
 
 router.get(
   '/:id',

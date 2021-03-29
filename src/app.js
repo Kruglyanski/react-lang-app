@@ -71,6 +71,7 @@ userRouter.use('/:id/settings', userIdValidator, settingRouter);
 
 app.use((req, res, next) => next(createError(NOT_FOUND)));
 
+
 app.use(errorHandler);
 
 module.exports = app;
