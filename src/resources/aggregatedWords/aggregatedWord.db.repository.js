@@ -49,12 +49,10 @@ const getAll = async (userId, group, page, perPage, filter) => {
 
   const matches = [];
 
-  if (group || group === 0) {
+    if (group || group === 0) {
     matches.push({
-      $match: {
-        group
-      }
-    });
+      $match: {"$and":[ { page: page}, { group: group}] }
+      });
   }
 
   if (filter) {
