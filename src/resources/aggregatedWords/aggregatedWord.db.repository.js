@@ -88,7 +88,6 @@ const getAll = async (userId, group, page, perPage, filter) => {
     }
   };
   const words = await Word.aggregate([lookup, ...pipeline, ...matches, facet]);
-  console.log('words', words)
   return words
 };
 

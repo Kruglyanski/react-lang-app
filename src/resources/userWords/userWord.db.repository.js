@@ -15,18 +15,21 @@ const get = async (wordId, userId) => {
 };
 
 const save = async (wordId, userId, userWord) => {
-  try {
-    return await UserWord.create(userWord);
-  } catch (err) {
-    if (err.code === MONGO_ENTITY_EXISTS_ERROR_CODE) {
-      throw new ENTITY_EXISTS(`such ${ENTITY_NAME} already exists`);
-    } else {
-      throw err;
+    try {
+      return  await UserWord.create(userWord);
+    } catch (err) {
+      if (err.code === MONGO_ENTITY_EXISTS_ERROR_CODE) {
+        throw new ENTITY_EXISTS(`such ${ENTITY_NAME} already exists`);
+      } else {
+        throw err;
+      }
     }
-  }
+
+
 };
 
 const update = async (wordId, userId, userWord) => {
+
   const updatedWord = await UserWord.findOneAndUpdate(
     { wordId, userId },
     { $set: userWord },
