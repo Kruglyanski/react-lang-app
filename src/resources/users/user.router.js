@@ -31,7 +31,7 @@ router.post(
   loader.single('avatar'),
   validator(user, 'body'),
   async (req, res) => {
-    const avatar = req.file ? req.file.path : '';
+    const avatar = req.file ? req.file.path.substring(req.file.path.indexOf('avatars'), req.file.path.length) : '';
     const body = { ...req.body, avatar };
     const userEntity = await userService.save(body);
     res.status(OK).send(userEntity.toResponse());

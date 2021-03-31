@@ -31,6 +31,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/files', express.static(path.join(__dirname, '../files')));
+app.use('/avatars', express.static(path.join(__dirname, '../src/resources/users/avatars')));
 
 app.use(checkAuthentication);
 
