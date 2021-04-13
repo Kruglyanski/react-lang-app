@@ -5,4 +5,6 @@ const getAll = async (userId, group, page, perPage, filter) =>
 
 const get = async (wordId, userId) => wordRepo.get(wordId, userId);
 
-module.exports = { getAll, get };
+const getCount = async (userId, filter) => wordRepo.getAllCount(userId, filter);
+
+module.exports = { getAll, get, getCount };

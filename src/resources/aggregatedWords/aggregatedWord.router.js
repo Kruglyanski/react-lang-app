@@ -30,6 +30,30 @@ router.get('/', async (req, res) => {
   res.status(OK).send(words);
 });
 
+router.get('/getCount', async (req, res) => {
+
+  const filter = req.query.filter ? JSON.parse(req.query.filter) : null;
+
+  const difficultWords = await aggregatedWordsService.getCount(
+    req.userId,
+    {"userWord.difficulty":"hard"}
+  );
+  const deletedWords = await aggregatedWordsService.getCount(
+    req.userId,
+    {"userWord.optional.deleted":true}
+  );
+  const learnedWords = await aggregatedWordsService.getCount(
+    req.userId,
+    {"userWord.optional.learned":true}
+  );
+
+  const difficult = difficultWords.length;
+  const learned = learnedWords.length;
+  const deleted = deletedWords.length;
+  console.log('count', filter);
+  res.status(OK).send({difficult, learned, deleted});
+});
+
 router.get('/:wordId', validator(wordId, 'params'), async (req, res) => {
   const word = await aggregatedWordsService.get(req.params.wordId, req.userId);
 

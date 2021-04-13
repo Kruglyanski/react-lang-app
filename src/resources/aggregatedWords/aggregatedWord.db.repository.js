@@ -90,7 +90,23 @@ const getAll = async (userId, group, page, perPage, filter) => {
   const words = await Word.aggregate([lookup, ...pipeline, ...matches, facet]);
   return words
 };
+const getAllCount = async (userId, filter) => {
+  lookup.$lookup.pipeline[0].$match.$expr.$and[0].$eq[1] = mongoose.Types.ObjectId(
+    userId
+  );
 
+  const matches = [];
+
+  if (filter) {
+    matches.push({
+      $match: {
+        ...filter
+      }
+    });
+  }
+  const words = await Word.aggregate([lookup, ...pipeline, ...matches]);
+  return words
+};
 const get = async (wordId, userId) => {
   lookup.$lookup.pipeline[0].$match.$expr.$and[0].$eq[1] = mongoose.Types.ObjectId(
     userId
@@ -110,4 +126,4 @@ const get = async (wordId, userId) => {
   return userWord;
 };
 
-module.exports = { getAll, get };
+module.exports = { getAll, get, getAllCount };
